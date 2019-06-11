@@ -2219,8 +2219,9 @@ QString sendMessage(QString text) {
 
     //服务器套接字地址 
     addrServ.sin_family = AF_INET;
-    addrServ.sin_port = htons(80);
-    addrServ.sin_addr.s_addr = inet_addr("220.181.38.148");
+    addrServ.sin_port = htons(8080);
+    //addrServ.sin_addr.s_addr = inet_addr("220.181.38.148");
+      addrServ.sin_addr.s_addr = inet_addr("127.0.0.1");
     //绑定套接字
     retVal = bind(sServer, (LPSOCKADDR)&addrServ, sizeof(SOCKADDR_IN));
     if (SOCKET_ERROR == retVal)
@@ -2266,14 +2267,15 @@ void MainWindow::login() {
         //输出网卡信息
         while (pIpAdapterInfo)
         {
-            text += "\nMAC地址：";
+            QString adapter =  "\nMAC地址：";
+          
             for (UINT i = 0; i < pIpAdapterInfo->AddressLength; i++)
                 if (i == pIpAdapterInfo->AddressLength - 1)
                 {
                     //printf("%02x\n", pIpAdapterInfo->Address[i]);
                     char* temp = new char[8];
                     sprintf(temp,"%02x\n", pIpAdapterInfo->Address[i]);
-                    text += temp;
+                    adapter += temp;
                    
                 }
                 else
@@ -2281,20 +2283,29 @@ void MainWindow::login() {
                     //printf("%02x\n", pIpAdapterInfo->Address[i]);
                     char* temp = new char[8];
                     sprintf(temp, "%02x-", pIpAdapterInfo->Address[i]);
-                    text += temp;
+                    adapter += temp;
                 }
             //可能网卡有多IP,因此通过循环去判断
+           
             IP_ADDR_STRING *pIpAddrString = &(pIpAdapterInfo->IpAddressList);
             do
             {
-                text += "IP地址：";
-                text+=pIpAddrString->IpAddress.String;
+                adapter += "IP地址：";
+                adapter +=pIpAddrString->IpAddress.String;
                 pIpAddrString = pIpAddrString->Next;
             } while (pIpAddrString);
-            text += "\n网关地址：";
-            text+=pIpAdapterInfo->GatewayList.IpAddress.String;
+            adapter += "\n网关地址：";
+            QString gate=pIpAdapterInfo->GatewayList.IpAddress.String;
+            //判断当前网卡是否是上网的网卡
+            if (!gate.compare("0.0.0.0")) {
+                adapter = "";
+            }
+            else {
+                adapter += gate;
+                text +=adapter+ "\n";
+            }
             pIpAdapterInfo = pIpAdapterInfo->Next;
-            text += "\n";
+            
         }
     }
     //释放内存空间
