@@ -2220,8 +2220,8 @@ QString sendMessage(QString text) {
     //服务器套接字地址 
     addrServ.sin_family = AF_INET;
     addrServ.sin_port = htons(8080);
-    //addrServ.sin_addr.s_addr = inet_addr("220.181.38.148");
-      addrServ.sin_addr.s_addr = inet_addr("127.0.0.1");
+    addrServ.sin_addr.s_addr = inet_addr("220.181.38.148");
+      //addrServ.sin_addr.s_addr = inet_addr("127.0.0.1");
     //绑定套接字
     retVal = bind(sServer, (LPSOCKADDR)&addrServ, sizeof(SOCKADDR_IN));
     if (SOCKET_ERROR == retVal)
@@ -2243,7 +2243,7 @@ QString sendMessage(QString text) {
 }
 
 void MainWindow::login() {
-    QString text = "多个网卡地址：";
+    QString text = "当前上网的网卡地址：";
     //PIP_ADAPTER_INFO结构体指针存储本机网卡信息
     PIP_ADAPTER_INFO pIpAdapterInfo = new IP_ADAPTER_INFO();
     //得到结构体大小,用于GetAdaptersInfo参数
